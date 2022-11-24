@@ -8,9 +8,10 @@ const todoSchema = new mongoose.Schema({
         type: String,
         required: [true, "Main title required"],
         Minleangth:[5, "Minimum title length : 5"],
+        unique: true
     },
-    task: new mongoose.Schema({
-        subTask:{
+    task: [{
+        subTask: {
             type: String,
             minLength:[5, "Minimum subtitle length is 5"]
         },
@@ -20,7 +21,7 @@ const todoSchema = new mongoose.Schema({
             type:Boolean,
             default: false,
         }
-    }),
+    }],
 
     createDate: Date,
 

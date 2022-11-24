@@ -29,22 +29,27 @@ exports.createTodo = async(req, res)=>{
      *  - task.isComplet (set as false by the database)
      */
     try{
-        const { title, dueDate, subTask, dueDateS} = req.body;
+        const dataObj = {};
+        const { title, dueDate, subTasks, dueDateS} = req.body;
         if(!title){
             throw new TodoExceptions(400, 'title missing')
         }
-        const user_id = req.params.uid
+        const user_id = req.params.uid;
+        if(subTasks){
+            subTasks.map((task)=>{
+                task.createDate = Date.now();
+                task.dueDateS = dueDateS
+            })
+            dataObj.task = subTasks;
+        }
         const newTodo = await Todoes.create({
+            ...dataObj,
             title,
             dueDate,
-            createDate: Date.now(),
-            task:{
-                subTask,
-                dueDate:dueDateS,
-                createDate: Date.now(),
-            },
-            user_id
-        });
+            user_id,
+            createDate: Date.now()
+        })
+
         res.status(201).json({
             action:"processed successfully",
             todo: newTodo,

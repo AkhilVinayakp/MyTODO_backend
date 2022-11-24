@@ -65,7 +65,7 @@ exports.createTodo = async(req, res)=>{
      */
     try{
         const dataObj = {};
-        const { title, dueDate, subTasks, dueDateS} = req.body;
+        const { title, dueDate, subTasks} = req.body;
         if(!title){
             throw new TodoExceptions(400, 'title missing')
         }
@@ -73,7 +73,6 @@ exports.createTodo = async(req, res)=>{
         if(subTasks){
             subTasks.map((task)=>{
                 task.createDate = Date.now();
-                task.dueDateS = dueDateS
             })
             dataObj.task = subTasks;
         }
@@ -93,5 +92,38 @@ exports.createTodo = async(req, res)=>{
     }catch(error){
         const resLog = setLog(error);
         res.status(resLog.status).json(resLog.json);
+    }
+}
+
+exports.editTodo = async (req,res)=>{
+    /**
+     * edit the given todo  
+     */
+    const user_id = req.params.uid
+    const todo_id = req.params.tid;
+    try{
+        const { title, dueDate, task } = req.body;
+        if(!title && !dueDate && !task){
+            throw new TodoExceptions(400, "No fields to update");
+        }
+        const filter = {
+            user_id:mongoose.Types.ObjectId(user_id), 
+            _id: mongoose.Types.ObjectId(todo_id)
+        };
+        const dataupdate ={
+            title,
+            dueDate,
+            task
+        }
+        const data = await Todoes.findOneAndUpdate(filter, dataupdate);
+        if(!data){
+            throw new TodoExceptions(404, "No todo found for the user");
+        }
+        res.status(200).json({
+            message:"Item"
+        })
+    }
+    catch(error){
+
     }
 }

@@ -3,16 +3,51 @@
  */
 
 const Todoes = require("../model/todos");
+const mongoose = require("mongoose")
+
 
 function TodoExceptions(status_code, message){
     this.status = status_code,
     this.message = message
 }
 
+function setLog(error){
+    const resLog = {};
+    if(error instanceof TodoExceptions){
+        resLog.status = error.status;
+        resLog.json = {
+            action: "can not process the request",
+            message: error.message
+        }
+    }
+    else{
+        resLog.json = {
+            action:"server error",
+            error
+        };
+        resLog.status = 500;
+    }
+    return resLog;
+}
+
 exports.todoes = async(req,res)=>{
     /**
      * Getting all todoes from the database
      */
+    const uid = req.params.uid;
+    try {
+        const data = await Todoes.find({user_id:mongoose.Types.ObjectId(uid)});
+        if(!data){
+            throw new TodoExceptions(400, "user does not have any todo")
+        }
+        res.status(200).json({
+            actions:"fetched data successfully",
+            data
+        })
+    } catch (error) {
+        const resLog = setLog(error)
+        res.status(resLog.status).json(resLog.json);
+    }
 
 }
 
@@ -56,17 +91,7 @@ exports.createTodo = async(req, res)=>{
         })
         
     }catch(error){
-        if(error instanceof TodoExceptions){
-            res.status(error.status).json({
-                action: "can not process the request",
-                message: error.message
-            })
-        }
-        else{
-            res.status(500).json({
-                action:"server error",
-                error
-            });
-        }
+        const resLog = setLog(error);
+        res.status(resLog.status).json(resLog.json);
     }
 }

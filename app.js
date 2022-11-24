@@ -10,6 +10,7 @@ const registerUser = require("./controller/registerUser")
 const loginUser = require("./controller/loginUser");
 const auth = require("./middleware/userAuth");
 const cookieParser = require("cookie-parser")
+const todoRouters = require("./routes/todoRoutes")
 const app = express();
 app.use(express.json());
 // using url encoded middleware
@@ -22,8 +23,10 @@ app.get("/", (req, res)=>{
     });
 });
 
+
 app.post("/register", registerUser);
 app.post("/login", loginUser);
+app.use("/api", todoRouters)
 
 
 

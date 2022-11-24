@@ -14,7 +14,7 @@ const todoSchema = new mongoose.Schema({
             type: String,
             minLength:[5, "Minimum subtitle length is 5"]
         },
-        dueDate: Date,
+        dueDateS: Date,
         createDate: Date,
         isComplete:{
             type:Boolean,
@@ -27,6 +27,10 @@ const todoSchema = new mongoose.Schema({
     dueDate: {
         type: Date,
         // TODO Validation. due date of the the main task should be >= subtask due date
+    },
+    user_id:{
+        type: mongoose.Schema.Types.ObjectId,
+        required:[true, "userID requried"]
     }
 
 });

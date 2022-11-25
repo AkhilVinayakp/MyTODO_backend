@@ -23,7 +23,7 @@ function setLog(error){
     else{
         resLog.json = {
             action:"server error",
-            error
+            error: error
         };
         resLog.status = 500;
     }
@@ -149,4 +149,37 @@ exports.deleteTodo = async(req, res)=>{
         const resLog = setLog(error);
         res.status(500).json({ERR: error});
     }
+}
+
+exports.addSubTask = async(req,res)=>{
+    /**
+     * Append subTask  
+     * Similar to editTodo for simplicity the editTodo
+     * will restricted to edit the title and dueDate of the main task/title
+     */
+     const user_id = req.params.uid
+     const todo_id = req.params.tid;
+     const filter = {
+        user_id:mongoose.Types.ObjectId(user_id), 
+        _id: mongoose.Types.ObjectId(todo_id)
+    };
+    try {
+        const { task } = req.body;
+        // finding the data
+        const data = await Todoes.findOne(filter);
+        if(!data){
+            throw new TodoExceptions(404, "TODO not found");
+        }
+        task.createDate =  Date.now();
+        data.task.push(task);
+        data.save()// saving the edited data to the database.
+        res.status(200).json({
+            message:"updated succesfully",
+            data
+        })
+    } catch (error) {
+        const resLog = setLog(error);
+        res.status(resLog.status).json(resLog.json);
+    }
+
 }

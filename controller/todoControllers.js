@@ -97,7 +97,9 @@ exports.createTodo = async(req, res)=>{
 
 exports.editTodo = async (req,res)=>{
     /**
-     * edit the given todo  
+     * edit the given todo.
+     * TODO : how to edit the subtask list
+     * TODO : Adding and removing from subtask
      */
     const user_id = req.params.uid
     const todo_id = req.params.tid;
@@ -120,10 +122,31 @@ exports.editTodo = async (req,res)=>{
             throw new TodoExceptions(404, "No todo found for the user");
         }
         res.status(200).json({
-            message:"Item"
+            message:"todo updated",
+            data
         })
     }
     catch(error){
+        const resLog = setLog(error);
+        res.status(resLog.status).json(resLog.json);
+    }
+}
 
+exports.deleteTodo = async(req, res)=>{
+    const {uid, tid} = req.params;
+    try {
+        const filter = {
+            user_id:mongoose.Types.ObjectId(uid), 
+            _id: mongoose.Types.ObjectId(tid)
+        };
+        const out = await Todoes.findOneAndDelete(filter);
+        res.status(200).json({
+            message: "data deleted",
+            out
+        })
+        
+    } catch (error) {
+        const resLog = setLog(error);
+        res.status(500).json({ERR: error});
     }
 }

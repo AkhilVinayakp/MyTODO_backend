@@ -230,12 +230,13 @@ exports.deleteSubTask = async(req, res)=>{
             _id: mongoose.Types.ObjectId(tid),
         
         }
-        const todo = await Todoes.find(filter);
+        const todo = await Todoes.findOne(filter);
         if(!todo){
             throw new TodoExceptions(404, "todo not found");
         }
         let tasks = todo.task;
         tasks = tasks.filter((item)=> item._id!=stid);
+        todo.task = tasks;
         const update = await todo.save();
         res.status(200).json({
             message:"task deleted",
@@ -244,6 +245,7 @@ exports.deleteSubTask = async(req, res)=>{
 
 
     } catch (error) {
+        console.log(error)
         const resLog = setLog(error);
         res.status(resLog.status).json(resLog.json);
     }

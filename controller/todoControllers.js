@@ -193,22 +193,27 @@ exports.editSubTask = async (req, res)=>{
         const filter = {
             user_id : mongoose.Types.ObjectId(uid),
             _id: mongoose.Types.ObjectId(tid),
-            
+        
         }
-        // const data = await Todoes.findOne(filter).po;
-        // console.log(data)
-        // const dataMatched = data.task.filter(item => item._id == new mongoose.Types.ObjectId(stid));
-        // console.log("matched data:", dataMatched);
-        // console.log(data.task[0]._id);   
-        const data = await Todoes.aggregate(
-            {$match: {_id:mongoose.Types.ObjectId(tid), user_id:mongoose.Types.ObjectId(uid)}},
-            { $unwind: '$task'},
-            {$match:{"task._id":mongoose.Types.ObjectId(stid)}}
-            )
-        console.log(data);
-        res.json(data)
+        const updatedData = req.body.update;
+        const data = await Todoes.findOne(filter);
+        if(!data){
+            throw new TodoExceptions(404, "todo not found in the database");
+        }
+        const todoes = data.task;
+        todoes.map((element)=>{
+            if(element._id == stid){
+                Object.assign(element, updatedData);
+            }
+        });
+        const update = await data.save();
+        res.status(200).json({
+            message: "Sub task successfully updated",
+            data: update
+        })
 
     } catch (error) {
-        res.status(500).json(error);
+        const resLog = setLog(error);
+        res.status(resLog.status).json(resLog.json);
     }
 }

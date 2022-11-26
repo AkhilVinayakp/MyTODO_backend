@@ -7,7 +7,7 @@ const express = require("express");
 const routes = express.Router();
 const auth = require("../middleware/userAuth")
 const { todoes, createTodo, editTodo, deleteTodo,
-    addSubTask, editSubTask
+    addSubTask, editSubTask, deleteSubTask
 } = require("../controller/todoControllers")
 // get all the controller for todos
 
@@ -20,5 +20,6 @@ routes.delete("/todoes/:uid/delete/:tid", auth, deleteTodo );
 routes.put("/todoes/:uid/todo/:tid/add", auth, addSubTask );
 // edit the given subtask;
 routes.put("/todoes/:uid/todo/:tid/task/:stid", auth, editSubTask);
+routes.delete("/todoes/:uid/todo/:tid/task/:stid", auth, deleteSubTask);
 
 module.exports = routes;

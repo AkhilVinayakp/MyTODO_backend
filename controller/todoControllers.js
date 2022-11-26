@@ -217,3 +217,34 @@ exports.editSubTask = async (req, res)=>{
         res.status(resLog.status).json(resLog.json);
     }
 }
+
+exports.deleteSubTask = async(req, res)=>{
+    /**
+     * delete sub task with in a given todo
+     * Need: user id, todo id and subtask id  
+     */
+     const {uid, tid, stid} = req.params;
+    try {
+        const filter = {
+            user_id : mongoose.Types.ObjectId(uid),
+            _id: mongoose.Types.ObjectId(tid),
+        
+        }
+        const todo = await Todoes.find(filter);
+        if(!todo){
+            throw new TodoExceptions(404, "todo not found");
+        }
+        let tasks = todo.task;
+        tasks = tasks.filter((item)=> item._id!=stid);
+        const update = await todo.save();
+        res.status(200).json({
+            message:"task deleted",
+            update
+        })
+
+
+    } catch (error) {
+        const resLog = setLog(error);
+        res.status(resLog.status).json(resLog.json);
+    }
+}

@@ -183,3 +183,32 @@ exports.addSubTask = async(req,res)=>{
     }
 
 }
+
+exports.editSubTask = async (req, res)=>{
+    /**
+     * edit the subtask by the given id 
+     */
+    const {uid, tid, stid} = req.params;
+    try {
+        const filter = {
+            user_id : mongoose.Types.ObjectId(uid),
+            _id: mongoose.Types.ObjectId(tid),
+            
+        }
+        // const data = await Todoes.findOne(filter).po;
+        // console.log(data)
+        // const dataMatched = data.task.filter(item => item._id == new mongoose.Types.ObjectId(stid));
+        // console.log("matched data:", dataMatched);
+        // console.log(data.task[0]._id);   
+        const data = await Todoes.aggregate(
+            {$match: {_id:mongoose.Types.ObjectId(tid), user_id:mongoose.Types.ObjectId(uid)}},
+            { $unwind: '$task'},
+            {$match:{"task._id":mongoose.Types.ObjectId(stid)}}
+            )
+        console.log(data);
+        res.json(data)
+
+    } catch (error) {
+        res.status(500).json(error);
+    }
+}

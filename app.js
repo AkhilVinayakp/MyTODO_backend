@@ -10,13 +10,15 @@ const registerUser = require("./controller/registerUser")
 const loginUser = require("./controller/loginUser");
 const auth = require("./middleware/userAuth");
 const cookieParser = require("cookie-parser")
-const todoRouters = require("./routes/todoRoutes")
+const todoRouters = require("./routes/todoRoutes");
+const cors = require("cors");
 const app = express();
 // adding swagger
 const swaggerUI = require("swagger-ui-express");
 const swaggerDocument = require("./swagger.json");
 app.use("/docs/", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 app.use(express.json());
+app.use(cors());
 // using url encoded middleware
 app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());

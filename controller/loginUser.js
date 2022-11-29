@@ -23,6 +23,7 @@ module.exports = async(req, res)=>{
             res.status(404).json({
                 "error":"user not found."
             });
+            return;
 
         }
         if(user && await bcrypt.compare(password, user.password)){
@@ -41,6 +42,12 @@ module.exports = async(req, res)=>{
             res.status(201).cookie("token", token, cookieOptions).json({
                 user,
                 token
+            })
+        }
+        else{
+            //password missmatch case
+            res.status(401).json({
+                error: "password does not match please try again"
             })
         }
     } catch (error) {

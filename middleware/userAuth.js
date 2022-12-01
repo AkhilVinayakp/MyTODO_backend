@@ -6,10 +6,14 @@ const JWT = require("jsonwebtoken");
 const {SECRET} = process.env;
 
 module.exports = (req, res, next)=>{
-    const {token} = req.cookies;
+    let {token} = req.cookies;
     if(!token){
         // check for the token in the headers
-        token = req.header("Authorization").replace("Bearer ", "");
+        token = req.header("Authorization");
+        console.log("token in header", token)
+        if(token){
+            token = token.replace("Bearer ","")
+        }
     }
     if(!token){
         res.status(401).json({
@@ -19,6 +23,7 @@ module.exports = (req, res, next)=>{
     }
     try {
         // decode the token
+        console.log("token got ", token);
         const decoded = JWT.verify(token, SECRET);
         req.user = decoded;
     } catch (error) {

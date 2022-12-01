@@ -10,7 +10,6 @@ module.exports = (req, res, next)=>{
     if(!token){
         // check for the token in the headers
         token = req.header("Authorization");
-        console.log("token in header", token)
         if(token){
             token = token.replace("Bearer ","")
         }
@@ -22,8 +21,6 @@ module.exports = (req, res, next)=>{
         return
     }
     try {
-        // decode the token
-        console.log("token got ", token);
         const decoded = JWT.verify(token, SECRET);
         req.user = decoded;
     } catch (error) {

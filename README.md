@@ -1,6 +1,6 @@
 # MyTODO_backend
  Backend for MyTODO using Express
- [project Live](https://mytodo-v0.netlify.app/dashboard)
+ [project Live](https://mytodo-v0.netlify.app/)
 
 
 # Appwrite Integration

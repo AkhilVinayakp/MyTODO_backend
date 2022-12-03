@@ -4,7 +4,7 @@
 
 
 # Appwrite Integration
-[Appwrite Auth](https://github.com/AkhilVinayakp/myTODO_AppwriteAuth)
+[Appwrite Auth](https://github.com/AkhilVinayakp/myTODO_AppwriteAuth) [fronend]
 
 
 # FrontEnd
